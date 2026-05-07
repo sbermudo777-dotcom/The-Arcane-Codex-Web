@@ -2,19 +2,22 @@ import { collection, onSnapshot, query, orderBy, limit } from "firebase/firestor
 import { db } from "../firebase";
 import type { PlayerStats } from "../types";
 
-export const getRanking = (callback: (rankings: PlayerStats[]) => void) => {
-  const q = query(collection(db, "rankings"), orderBy("ecosCollected", "desc"), limit(20));
+export const getRanking = (callback: (players: PlayerStats[]) => void) => {
+  const q = query(
+    collection(db, "rankings"), 
+    orderBy("ecosCollected", "desc"), 
+    limit(10)
+  );
   
   return onSnapshot(q, (snapshot) => {
-    const rankings = snapshot.docs.map(doc => ({
+    const players: PlayerStats[] = snapshot.docs.map(doc => ({
       ...doc.data(),
       uid: doc.id
     } as PlayerStats));
+    callback(players);
     
-    // Cachear localmente
-    localStorage.setItem('arcane_ranking_cache', JSON.stringify(rankings));
-    
-    callback(rankings);
+    // Mirror persistence to LocalStorage
+    localStorage.setItem('arcane_ranking_cache', JSON.stringify(players));
   });
 };
 
