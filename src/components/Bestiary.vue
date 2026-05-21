@@ -79,11 +79,11 @@ onMounted(() => {
         <div class="w-80 h-1.5 bg-slate-900/50 rounded-full overflow-hidden border border-slate-800 shadow-inner relative">
           <div 
             class="h-full bg-gradient-to-r from-amber-900 via-amber-600 to-amber-400 transition-all duration-1000 shadow-[0_0_15px_rgba(245,158,11,0.4)]"
-            :style="{ width: (ecos.filter(e => isAdmin || props.unlockedEcos.includes(e.id)).length / (ecos.length || 1) * 100) + '%' }"
+            :style="{ width: (ecos.filter(e => isAdmin || props.unlockedEcos.includes(e.id || '')).length / (ecos.length || 1) * 100) + '%' }"
           ></div>
         </div>
         <div class="text-[10px] font-serif text-amber-500/60 tracking-widest uppercase">
-          {{ ecos.filter(e => isAdmin || props.unlockedEcos.includes(e.id)).length }} / {{ ecos.length }} Ecos Restaurados
+          {{ ecos.filter(e => isAdmin || props.unlockedEcos.includes(e.id || '')).length }} / {{ ecos.length }} Ecos Restaurados
         </div>
       </div>
 
@@ -101,7 +101,7 @@ onMounted(() => {
         <EnemyCard 
           v-for="eco in ecos" 
           :key="eco.id" 
-          :eco="{ ...eco, unlocked: isAdmin || props.unlockedEcos.includes(eco.id) }" 
+          :eco="{ ...eco, unlocked: isAdmin || props.unlockedEcos.includes(eco.id || '') }" 
         />
       </div>
 
