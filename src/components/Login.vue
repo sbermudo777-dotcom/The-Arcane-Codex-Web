@@ -3,12 +3,21 @@ import { ref } from 'vue';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 
+// Controla si se visualiza el formulario de inicio de sesión o de registro de nuevo usuario
 const isLogin = ref(true);
+// Almacena el correo electrónico (identificador de alma) ingresado
 const email = ref('');
+// Almacena la contraseña (sello secreto) ingresada
 const password = ref('');
+// Mensaje de error para mostrar validaciones fallidas
 const error = ref('');
+// Indica si hay un proceso de autenticación en curso
 const loading = ref(false);
 
+/**
+ * Ejecuta el proceso de autenticación (inicio de sesión o creación de cuenta) con Firebase Auth.
+ * Valida que los campos no estén vacíos y gestiona los códigos de error comunes de Firebase.
+ */
 const handleAuth = async () => {
   if (!email.value || !password.value) {
     error.value = "Ingresa tus credenciales, Guardián.";
@@ -41,12 +50,12 @@ const handleAuth = async () => {
 
 <template>
   <div class="min-h-screen flex items-center justify-center relative overflow-hidden bg-slate-950">
-    <!-- Background Image -->
+    <!-- Ilustración y filtros de fondo arcanos -->
     <div class="absolute inset-0 z-0 opacity-40 bg-[url('/bg_moon.png')] bg-cover bg-center grayscale-[0.5] contrast-[1.2]"></div>
     <div class="absolute inset-0 z-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950 pointer-events-none"></div>
 
     <div class="relative z-10 w-full max-w-md px-6 py-12">
-      <!-- Title Box -->
+      <!-- Panel del título del videojuego -->
       <div class="mb-12 text-center">
         <div class="inline-block p-1 bg-gradient-to-b from-slate-700 to-slate-900 rounded-lg shadow-2xl border border-slate-600/50">
           <div class="px-8 py-4 bg-slate-900/90 rounded border-t border-slate-500/30">
@@ -58,7 +67,7 @@ const handleAuth = async () => {
         </div>
       </div>
 
-      <!-- Auth Form (Stone Panel) -->
+      <!-- Formulario de autenticación (Panel de piedra rúnico) -->
       <div class="bg-slate-900/80 backdrop-blur-xl border-x border-y border-slate-700/50 rounded-2xl shadow-[0_30px_60px_rgba(0,0,0,0.8)] overflow-hidden">
         <div class="p-10 space-y-8">
           <div class="flex border-b border-slate-800">
@@ -103,7 +112,7 @@ const handleAuth = async () => {
             {{ error }}
           </div>
 
-          <!-- Stone Button -->
+          <!-- Botón rústico con efecto rúnico -->
           <button 
             @click="handleAuth"
             :disabled="loading"

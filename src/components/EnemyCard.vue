@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { Eco } from '../types';
 
+// Propiedades recibidas por la carta del Eco
 defineProps<{
+  // Objeto de tipo Eco que contiene la información e historia a renderizar
   eco: Eco;
 }>();
 </script>
@@ -15,10 +17,10 @@ defineProps<{
         : 'bg-slate-950/60 border-slate-900 grayscale sepia opacity-40 cursor-not-allowed'
     ]"
   >
-    <!-- Card Inner Glow -->
+    <!-- Destello interno al pasar el cursor -->
     <div v-if="eco.unlocked" class="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
 
-    <!-- Image Container -->
+    <!-- Contenedor de la ilustración del Eco -->
     <div class="aspect-[3/4] overflow-hidden relative">
       <img 
         :src="eco.imageUrl || '/enemies/placeholder.png'" 
@@ -26,10 +28,10 @@ defineProps<{
         class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 group-hover:rotate-1"
       />
       
-      <!-- Overlay Gradient -->
+      <!-- Degradado de superposición oscura -->
       <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-90"></div>
       
-      <!-- Status Badge -->
+      <!-- Indicador de estado bloqueado -->
       <div v-if="!eco.unlocked" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/40 backdrop-blur-[2px]">
         <div class="w-16 h-16 rounded-full border border-slate-700 flex items-center justify-center mb-2 bg-slate-900/50">
            <span class="text-2xl">🔒</span>
@@ -37,13 +39,13 @@ defineProps<{
         <p class="text-[9px] uppercase tracking-[0.4em] text-slate-500 font-black">Restauración Pendiente</p>
       </div>
 
-      <!-- Corner Rune -->
+      <!-- Runa representativa de la rareza -->
       <div v-if="eco.unlocked" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center border border-amber-500/20 rounded-lg backdrop-blur-md text-[10px] text-amber-500/50 font-serif">
         {{ eco.rarity.charAt(0).toUpperCase() }}
       </div>
     </div>
 
-    <!-- Content -->
+    <!-- Contenido e información del Eco -->
     <div class="p-8 relative">
       <div class="flex items-center gap-3 mb-4">
         <div class="h-px flex-grow bg-gradient-to-r from-transparent to-slate-800"></div>
@@ -69,7 +71,7 @@ defineProps<{
       </div>
     </div>
 
-    <!-- Animated Border Glow -->
+    <!-- Borde con brillo animado al pasar el cursor -->
     <div v-if="eco.unlocked" class="absolute inset-0 pointer-events-none border border-amber-500/0 group-hover:border-amber-500/10 rounded-3xl transition-all duration-700"></div>
   </div>
 </template>

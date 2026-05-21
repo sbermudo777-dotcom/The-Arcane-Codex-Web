@@ -4,15 +4,21 @@ import { getEcos } from '../services/ecoService';
 import type { Eco } from '../types';
 import EnemyCard from './EnemyCard.vue';
 
+// Define las propiedades de entrada para el Bestiario (Códice)
 const props = defineProps<{
+  // Indica si el usuario autenticado tiene rol de administrador
   isAdmin: boolean;
+  // Identificadores de los Ecos que el jugador ha desbloqueado en su aventura
   unlockedEcos: string[];
 }>();
 
+// Listado de Ecos cargados desde la base de datos
 const ecos = ref<Eco[]>([]);
+// Controla el estado visual de carga del Códice
 const loading = ref(true);
 
 onMounted(() => {
+  // Suscripción en tiempo real a la colección de Ecos en Firestore
   getEcos((data) => {
     ecos.value = data;
     loading.value = false;
@@ -22,11 +28,11 @@ onMounted(() => {
 
 <template>
   <div class="min-h-screen bg-slate-950 text-slate-200 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-    <!-- Background Texture & Overlay -->
+    <!-- Textura y superposición de fondo arcanos -->
     <div class="absolute inset-0 z-0 opacity-10 pointer-events-none bg-[url('/bg_texture.png')] bg-repeat"></div>
     <div class="absolute inset-0 z-0 bg-gradient-to-b from-slate-950 via-transparent to-slate-950 pointer-events-none"></div>
 
-    <!-- Floating Particles (Echos) -->
+    <!-- Partículas mágicas flotantes (Ecos) -->
     <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
       <div v-for="n in 15" :key="n" 
         class="absolute w-1 h-1 bg-amber-500/30 rounded-full animate-float"
@@ -40,7 +46,7 @@ onMounted(() => {
     </div>
 
     <div class="max-w-7xl mx-auto relative z-10">
-      <!-- Header Section -->
+      <!-- Sección de encabezado principal -->
       <header class="text-center mb-24 space-y-8 relative">
         <div class="flex items-center justify-center gap-4 mb-2">
           <div class="h-px w-16 bg-gradient-to-r from-transparent to-amber-600"></div>
@@ -67,7 +73,7 @@ onMounted(() => {
         </p>
       </header>
 
-      <!-- Stats Display -->
+      <!-- Visualización del progreso de restauración -->
       <div class="flex flex-col items-center mb-20 space-y-4">
         <div class="text-[10px] uppercase tracking-[0.4em] text-slate-500 font-bold">Sincronización del Códice</div>
         <div class="w-80 h-1.5 bg-slate-900/50 rounded-full overflow-hidden border border-slate-800 shadow-inner relative">
@@ -81,7 +87,7 @@ onMounted(() => {
         </div>
       </div>
 
-      <!-- Grid -->
+      <!-- Rejilla de cartas de Ecos -->
       <div v-if="loading" class="flex flex-col justify-center items-center py-32 space-y-6">
         <div class="relative w-20 h-20">
           <div class="absolute inset-0 border-2 border-amber-500/10 rounded-full"></div>
@@ -99,7 +105,7 @@ onMounted(() => {
         />
       </div>
 
-      <!-- Footer Info -->
+      <!-- Información del pie de página -->
       <footer class="mt-40 text-center border-t border-slate-900/50 pt-20 pb-12">
         <div class="flex justify-center gap-12 mb-12 opacity-30">
           <span class="text-3xl grayscale hover:grayscale-0 transition-all duration-500 cursor-help">📜</span>
@@ -137,7 +143,7 @@ body {
   animation: float linear infinite;
 }
 
-/* Custom Scrollbar for a premium feel */
+/* Barra de desplazamiento personalizada para estilo visual premium */
 ::-webkit-scrollbar {
   width: 8px;
 }

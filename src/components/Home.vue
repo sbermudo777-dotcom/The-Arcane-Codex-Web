@@ -1,28 +1,28 @@
 <script setup lang="ts">
-// No logic needed for now
+// Componente estático de la pantalla de inicio principal. No requiere lógica de estado en este momento.
 </script>
 
 <template>
   <div class="min-h-screen flex flex-col items-center justify-center p-8 relative overflow-hidden">
-    <!-- Shared Background elements -->
+    <!-- Elementos de fondo compartidos con texturas arcanas -->
     <div class="absolute inset-0 z-0 opacity-10 pointer-events-none bg-[url('/bg_texture.png')] bg-repeat"></div>
     <div class="absolute inset-0 z-0 bg-gradient-to-b from-slate-950 via-transparent to-slate-950 pointer-events-none"></div>
 
-    <!-- Central Magical Element -->
+    <!-- Elemento mágico y runas giratorias del centro -->
     <div class="relative z-10 mb-12">
       <div class="w-64 h-64 md:w-96 md:h-96 relative">
-        <!-- Outer Rotating Rings -->
+        <!-- Anillos exteriores giratorios concéntricos -->
         <div class="absolute inset-0 border-4 border-amber-500/20 rounded-full animate-[spin_20s_linear_infinite]"></div>
         <div class="absolute inset-4 border-2 border-dashed border-amber-500/10 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
         <div class="absolute inset-12 border border-amber-500/30 rounded-full animate-pulse"></div>
         
-        <!-- Central Glow -->
+        <!-- Resplandor central de la luna moribunda -->
         <div class="absolute inset-0 flex items-center justify-center">
           <div class="w-32 h-32 bg-amber-500/20 rounded-full blur-3xl animate-pulse"></div>
           <span class="text-8xl md:text-9xl drop-shadow-[0_0_30px_rgba(245,158,11,0.6)] select-none">🌙</span>
         </div>
 
-        <!-- Floating Runes around center -->
+        <!-- Runas flotantes y en rotación alrededor del centro -->
         <div class="absolute inset-0 animate-[spin_30s_linear_infinite]">
            <span class="absolute top-0 left-1/2 -translate-x-1/2 text-amber-500/40 text-2xl">ᚠ</span>
            <span class="absolute bottom-0 left-1/2 -translate-x-1/2 text-amber-500/40 text-2xl">ᚢ</span>
@@ -32,7 +32,7 @@
       </div>
     </div>
 
-    <!-- Title and Intro -->
+    <!-- Título y narrativa introductoria del videojuego -->
     <div class="text-center relative z-10 space-y-6">
       <h2 class="text-amber-500 uppercase tracking-[0.8em] text-xs font-black drop-shadow-glow">
         Ecos de una Luna Moribunda
@@ -56,7 +56,7 @@
       </div>
     </div>
 
-    <!-- Floating Particles -->
+    <!-- Partículas mágicas de energía flotando libremente -->
     <div class="absolute inset-0 z-0 pointer-events-none">
       <div v-for="n in 20" :key="n" 
         class="absolute w-1 h-1 bg-amber-500/20 rounded-full animate-float"

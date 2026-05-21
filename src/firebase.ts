@@ -1,11 +1,9 @@
-// Import the functions you need from the SDKs you need
+// Importación de funciones esenciales de los SDKs de Firebase requeridos para el proyecto
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
+// Configuración de conexión de Firebase para la aplicación web "The Arcane Codex"
 const firebaseConfig = {
   apiKey: "AIzaSyA6g_OyljnZgmeFjqOvRjd4NtinYjKpOUQ",
   authDomain: "the-arcane-codex.firebaseapp.com",
@@ -15,10 +13,10 @@ const firebaseConfig = {
   appId: "1:65959588585:web:ff91d4ea1741ae4fc67678"
 };
 
-// Initialize Firebase
+// Inicialización de la aplicación de Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Cloud Firestore and get a reference to the service
+// Inicialización de los servicios base de la base de datos Firestore y la autenticación
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 

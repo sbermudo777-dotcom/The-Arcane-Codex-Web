@@ -9,52 +9,72 @@ import Login from './components/Login.vue';
 import { getPlayerStats, initializeUserStats } from './services/userService';
 import type { PlayerStats } from './types';
 
+// Define la sección o vista que se está mostrando actualmente
 const currentView = ref('home');
+// Almacena el usuario de Firebase Auth autenticado actualmente
 const user = ref<any>(null);
+// Almacena las estadísticas y datos del perfil del jugador en sesión
 const userStats = ref<PlayerStats | null>(null);
+// Controla el estado visual de carga mientras se verifica la sesión en Firebase Auth
 const authLoading = ref(true);
 
+// Determina si el usuario autenticado tiene el correo de administración
 const isAdmin = computed(() => user.value?.email === 'admin@arcanecodex.com');
 
 onMounted(() => {
+  // Observa los cambios en el estado de autenticación de Firebase
   onAuthStateChanged(auth, async (u) => {
     user.value = u;
     
     if (u) {
-      await initializeUserStats(u.uid, u.email || '');
-      getPlayerStats(u.uid, (stats) => {
-        userStats.value = stats;
-      });
+      // Si el usuario estaba en la vista de login, lo redirige automáticamente a la pantalla de inicio de forma instantánea
       if (currentView.value === 'login') currentView.value = 'home';
+      
+      // Ejecutar la inicialización y obtención de estadísticas en segundo plano de manera no bloqueante
+      (async () => {
+        try {
+          await initializeUserStats(u.uid, u.email || '');
+          getPlayerStats(u.uid, (stats) => {
+            userStats.value = stats;
+          });
+        } catch (err) {
+          console.error("Error al inicializar o recuperar estadísticas del jugador en Firestore:", err);
+        }
+      })();
     } else {
+      // Limpia las estadísticas si no hay sesión activa
       userStats.value = null;
-      currentView.value = 'login';
     }
     
     authLoading.value = false;
   });
 });
 
+/**
+ * Gestiona la navegación de la aplicación web entre las diferentes secciones.
+ *
+ * @param view Identificador de la sección a visualizar.
+ */
 const navigate = (view: string) => {
-  if (!user.value && view !== 'login') {
-    currentView.value = 'login';
-    return;
-  }
   currentView.value = view;
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
+/**
+ * Cierra la sesión activa del usuario en Firebase Auth y redirige a la vista principal.
+ */
 const logout = async () => {
   await signOut(auth);
+  currentView.value = 'home';
 };
 </script>
 
 <template>
   <div v-if="!authLoading" class="bg-slate-950 min-h-screen text-slate-200 selection:bg-amber-500/30">
-    <!-- Main Content -->
-    <main :class="{ 'pb-32': user }">
+    <!-- Contenedor de contenido principal -->
+    <main class="pb-32">
       <transition name="fade" mode="out-in">
-        <Login v-if="!user" />
+        <Login v-if="currentView === 'login'" />
         <Home v-else-if="currentView === 'home'" @navigate="navigate" />
         <Bestiary 
           v-else-if="currentView === 'bestiary'" 
@@ -65,11 +85,11 @@ const logout = async () => {
       </transition>
     </main>
 
-    <!-- Global Arcane Navigation (Only if logged in) -->
-    <nav v-if="user" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
+    <!-- Barra de navegación arcana global (visible para invitados y usuarios registrados) -->
+    <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
       <div class="flex items-center gap-8 px-10 py-5 bg-slate-900/60 backdrop-blur-2xl border border-slate-800 rounded-full shadow-[0_15px_50px_rgba(0,0,0,0.8)]">
         
-        <!-- Home -->
+        <!-- Sección de Inicio -->
         <button 
           @click="navigate('home')"
           class="group relative transition-all duration-300"
@@ -79,7 +99,7 @@ const logout = async () => {
           <div v-if="currentView === 'home'" class="absolute -bottom-3 left-1/2 -translate-x-1/2 w-1 h-1 bg-amber-500 rounded-full shadow-[0_0_8px_#f59e0b]"></div>
         </button>
 
-        <!-- Bestiary -->
+        <!-- Sección del Bestiario (Wiki) -->
         <button 
           @click="navigate('bestiary')"
           class="group relative transition-all duration-300"
@@ -89,7 +109,7 @@ const logout = async () => {
           <div v-if="currentView === 'bestiary'" class="absolute -bottom-3 left-1/2 -translate-x-1/2 w-1 h-1 bg-amber-500 rounded-full shadow-[0_0_8px_#f59e0b]"></div>
         </button>
 
-        <!-- Ranking -->
+        <!-- Sección de Clasificación (Ranking) -->
         <button 
           @click="navigate('ranking')"
           class="group relative transition-all duration-300"
@@ -99,19 +119,31 @@ const logout = async () => {
           <div v-if="currentView === 'ranking'" class="absolute -bottom-3 left-1/2 -translate-x-1/2 w-1 h-1 bg-amber-500 rounded-full shadow-[0_0_8px_#f59e0b]"></div>
         </button>
 
-        <!-- Logout -->
+        <!-- Control de Sesión / Acceso Guardián -->
         <button 
+          v-if="user"
           @click="logout"
+          title="Cerrar sesión"
           class="group relative transition-all duration-300 hover:scale-110 opacity-40 hover:opacity-100"
         >
           <span class="text-2xl block">🚪</span>
+        </button>
+        <button 
+          v-else
+          @click="navigate('login')"
+          title="Acceso Guardián"
+          class="group relative transition-all duration-300"
+          :class="currentView === 'login' ? 'scale-125' : 'hover:scale-110 grayscale opacity-40 hover:grayscale-0 hover:opacity-100'"
+        >
+          <span class="text-2xl block">🔑</span>
+          <div v-if="currentView === 'login'" class="absolute -bottom-3 left-1/2 -translate-x-1/2 w-1 h-1 bg-amber-500 rounded-full shadow-[0_0_8px_#f59e0b]"></div>
         </button>
 
       </div>
     </nav>
   </div>
 
-  <!-- Loading State -->
+  <!-- Pantalla de carga inicial mientras se verifica la sesión -->
   <div v-else class="min-h-screen bg-slate-950 flex items-center justify-center">
     <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-amber-500"></div>
   </div>
@@ -133,7 +165,7 @@ const logout = async () => {
   transform: translateY(-20px);
 }
 
-/* Custom selection color */
+/* Color de selección de texto personalizado al estilo arcano */
 ::selection {
   background: rgba(245, 158, 11, 0.3);
   color: white;
