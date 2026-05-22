@@ -6,6 +6,18 @@ defineProps<{
   // Objeto de tipo Eco que contiene la información e historia a renderizar
   eco: Eco;
 }>();
+const rarityMap: Record<string, string> = {
+  common: 'Común',
+  rare: 'Raro',
+  epic: 'Épico',
+  legendary: 'Legendario'
+};
+
+const typeMap: Record<string, string> = {
+  enemy: 'Enemigo',
+  lore: 'Historia',
+  location: 'Ubicación'
+};
 </script>
 
 <template>
@@ -41,7 +53,7 @@ defineProps<{
 
       <!-- Runa representativa de la rareza -->
       <div v-if="eco.unlocked" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center border border-amber-500/20 rounded-lg backdrop-blur-md text-[10px] text-amber-500/50 font-serif">
-        {{ eco.rarity.charAt(0).toUpperCase() }}
+        {{ (rarityMap[eco.rarity.toLowerCase()] || eco.rarity).charAt(0).toUpperCase() }}
       </div>
     </div>
 
@@ -49,7 +61,9 @@ defineProps<{
     <div class="p-8 relative">
       <div class="flex items-center gap-3 mb-4">
         <div class="h-px flex-grow bg-gradient-to-r from-transparent to-slate-800"></div>
-        <span class="text-[9px] uppercase tracking-[0.3em] text-amber-500/80 font-bold whitespace-nowrap">{{ eco.rarity }} • {{ eco.type }}</span>
+        <span class="text-[9px] uppercase tracking-[0.3em] text-amber-500/80 font-bold whitespace-nowrap">
+          {{ rarityMap[eco.rarity.toLowerCase()] || eco.rarity }} • {{ typeMap[eco.type.toLowerCase()] || eco.type }}
+        </span>
         <div class="h-px flex-grow bg-gradient-to-l from-transparent to-slate-800"></div>
       </div>
       
@@ -60,6 +74,15 @@ defineProps<{
       <p class="text-sm text-slate-400 leading-relaxed italic mb-6 min-h-[3rem]">
         {{ eco.unlocked ? eco.description : 'Los fragmentos de este Eco se encuentran dispersos en la penumbra de Aethelgard.' }}
       </p>
+
+      <!-- Indicador de Próximamente si es un enemigo y no es el Golem -->
+      <div 
+        v-if="eco.type === 'enemy' && !eco.id?.toLowerCase().includes('golem') && !eco.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes('golem')" 
+        class="mt-2 mb-6 flex items-center justify-center gap-2 py-1.5 px-3 bg-red-950/40 border border-red-500/20 rounded-xl shadow-[0_0_15px_rgba(239,68,68,0.05)]"
+      >
+        <span class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]"></span>
+        <span class="text-[10px] font-bold text-red-400 uppercase tracking-widest font-sans">Próximamente en el Juego</span>
+      </div>
 
       <div v-if="eco.unlocked" class="space-y-4 overflow-hidden">
         <div class="h-px bg-gradient-to-r from-transparent via-amber-900/30 to-transparent"></div>

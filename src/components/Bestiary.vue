@@ -16,13 +16,23 @@ const props = defineProps<{
 const ecos = ref<Eco[]>([]);
 // Controla el estado visual de carga del Códice
 const loading = ref(true);
+// Almacena posibles mensajes de error en la consulta
+const errorMsg = ref<string | null>(null);
 
 onMounted(() => {
-  // Suscripción en tiempo real a la colección de Ecos en Firestore
-  getEcos((data) => {
-    ecos.value = data;
-    loading.value = false;
-  });
+  // Suscripción en tiempo real a la colección de Ecos en Firestore con manejo de errores
+  getEcos(
+    (data) => {
+      ecos.value = data;
+      errorMsg.value = null;
+      loading.value = false;
+    },
+    (err) => {
+      console.error("Error al obtener los ecos de Firestore:", err);
+      errorMsg.value = err.message || String(err);
+      loading.value = false;
+    }
+  );
 });
 </script>
 
@@ -96,26 +106,29 @@ onMounted(() => {
         </div>
         <span class="text-[10px] uppercase tracking-[0.5em] text-amber-500 animate-pulse font-bold">Consultando el Códice Arcano...</span>
       </div>
+
+      <!-- Mensaje de Error en caso de fallo de conexión -->
+      <div v-else-if="errorMsg" class="flex flex-col justify-center items-center py-20 px-8 space-y-6 max-w-lg mx-auto text-center border border-red-500/20 bg-red-950/10 rounded-3xl backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+        <span class="text-5xl animate-bounce">⚠️</span>
+        <h3 class="text-2xl font-serif font-bold text-red-400 tracking-wider">Error de Sincronización</h3>
+        <p class="text-sm text-slate-300 leading-relaxed font-light">
+          No se pudo establecer conexión con el Códice Arcano en Firestore.
+        </p>
+        <p class="text-[10px] uppercase tracking-wider text-red-500/90 font-mono bg-red-950/40 py-2 px-4 rounded-xl border border-red-500/10">
+          Detalle: {{ errorMsg }}
+        </p>
+        <div class="text-xs text-slate-400 mt-4 leading-relaxed font-sans">
+          Esto suele deberse a <strong class="text-amber-500">permisos insuficientes</strong> en las reglas de seguridad de Firestore (por ejemplo, si la base de datos requiere inicio de sesión) o a problemas de red.
+        </div>
+      </div>
       
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
         <EnemyCard 
           v-for="eco in ecos" 
           :key="eco.id" 
-          :eco="{ ...eco, unlocked: isAdmin || props.unlockedEcos.includes(eco.id || '') }" 
+          :eco="{ ...eco, unlocked: isAdmin || eco.type === 'enemy' || props.unlockedEcos.includes(eco.id || '') }" 
         />
       </div>
-
-      <!-- Información del pie de página -->
-      <footer class="mt-40 text-center border-t border-slate-900/50 pt-20 pb-12">
-        <div class="flex justify-center gap-12 mb-12 opacity-30">
-          <span class="text-3xl grayscale hover:grayscale-0 transition-all duration-500 cursor-help">📜</span>
-          <span class="text-3xl grayscale hover:grayscale-0 transition-all duration-500 cursor-help">⚔️</span>
-          <span class="text-3xl grayscale hover:grayscale-0 transition-all duration-500 cursor-help">🔮</span>
-        </div>
-        <p class="text-slate-700 text-[9px] uppercase tracking-[0.6em] font-bold">
-          Vínculo Arcano Establecido • Firestore Realtime • Aethelgard v1.0 • © 2026
-        </p>
-      </footer>
     </div>
   </div>
 </template>

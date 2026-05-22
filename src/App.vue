@@ -71,6 +71,34 @@ const logout = async () => {
 
 <template>
   <div v-if="!authLoading" class="bg-slate-950 min-h-screen text-slate-200 selection:bg-amber-500/30">
+    <!-- Botón de Control de Sesión / Estado del Guardián en la esquina superior derecha -->
+    <div v-if="currentView !== 'login'" class="absolute top-6 right-6 md:right-12 z-50 flex items-center gap-4">
+      <div 
+        v-if="user" 
+        class="flex items-center gap-3 px-4 py-2 bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.4)]"
+      >
+        <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_#10b981]"></div>
+        <span class="text-xs font-serif text-slate-300 tracking-wider">
+          Guardián: <strong class="text-amber-500">{{ userStats?.username || userStats?.playerName || user.email?.split('@')[0] }}</strong>
+        </span>
+        <button 
+          @click="logout" 
+          title="Cerrar Sesión" 
+          class="ml-2 p-1.5 hover:bg-slate-800 rounded-full transition-colors duration-300 text-lg cursor-pointer"
+        >
+          🚪
+        </button>
+      </div>
+      <button 
+        v-else 
+        @click="navigate('login')"
+        class="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-950 font-bold text-[10px] uppercase tracking-widest rounded-full shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_25px_rgba(245,158,11,0.4)] transition-all duration-500 hover:scale-105 active:scale-95 cursor-pointer"
+      >
+        <span>🔑</span>
+        <span>Iniciar Sesión</span>
+      </button>
+    </div>
+
     <!-- Contenedor de contenido principal -->
     <main class="pb-32">
       <transition name="fade" mode="out-in">
@@ -117,26 +145,6 @@ const logout = async () => {
         >
           <span class="text-3xl block filter drop-shadow-[0_0_15px_rgba(245,158,11,0.5)]">🔮</span>
           <div v-if="currentView === 'ranking'" class="absolute -bottom-3 left-1/2 -translate-x-1/2 w-1 h-1 bg-amber-500 rounded-full shadow-[0_0_8px_#f59e0b]"></div>
-        </button>
-
-        <!-- Control de Sesión / Acceso Guardián -->
-        <button 
-          v-if="user"
-          @click="logout"
-          title="Cerrar sesión"
-          class="group relative transition-all duration-300 hover:scale-110 opacity-40 hover:opacity-100"
-        >
-          <span class="text-2xl block">🚪</span>
-        </button>
-        <button 
-          v-else
-          @click="navigate('login')"
-          title="Acceso Guardián"
-          class="group relative transition-all duration-300"
-          :class="currentView === 'login' ? 'scale-125' : 'hover:scale-110 grayscale opacity-40 hover:grayscale-0 hover:opacity-100'"
-        >
-          <span class="text-2xl block">🔑</span>
-          <div v-if="currentView === 'login'" class="absolute -bottom-3 left-1/2 -translate-x-1/2 w-1 h-1 bg-amber-500 rounded-full shadow-[0_0_8px_#f59e0b]"></div>
         </button>
 
       </div>

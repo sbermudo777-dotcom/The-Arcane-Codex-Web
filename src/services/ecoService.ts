@@ -9,14 +9,23 @@ import type { Eco } from "../types";
  * @param callback Función de retorno que recibe el listado actualizado de Ecos.
  * @returns Función de desuscripción de Firestore para liberar los recursos del observador en tiempo real.
  */
-export const getEcos = (callback: (ecos: Eco[]) => void) => {
+export const getEcos = (callback: (ecos: Eco[]) => void, onError?: (error: any) => void) => {
   const q = query(collection(db, "ecos"), orderBy("name"));
   
-  return onSnapshot(q, (snapshot) => {
-    const ecos: Eco[] = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    } as Eco));
-    callback(ecos);
-  });
+  return onSnapshot(q, 
+    (snapshot) => {
+      const ecos: Eco[] = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as Eco));
+      callback(ecos);
+    },
+    (error) => {
+      if (onError) {
+        onError(error);
+      } else {
+        console.error("Error in getEcos onSnapshot:", error);
+      }
+    }
+  );
 };

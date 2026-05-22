@@ -52,6 +52,8 @@ export interface PlayerStats {
   uid: string;
   // Apodo de la cuenta del usuario
   username?: string;
+  // Correo electrónico de la cuenta
+  email?: string;
   // Nombre arcade ingresado por el jugador al terminar la partida
   playerName?: string;
   // El mejor tiempo de finalización registrado (en segundos)

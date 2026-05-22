@@ -37,12 +37,15 @@ export const initializeUserStats = async (uid: string, email: string) => {
   const snap = await getDoc(docRef);
   
   if (!snap.exists()) {
+    const pendingUsername = localStorage.getItem('pending_username');
     const newStats: PlayerStats = {
       uid,
-      username: email.split('@')[0],
+      username: pendingUsername || email.split('@')[0],
+      email: email,
       unlockedEcos: [],
       lastSync: new Date()
     };
     await setDoc(docRef, newStats);
+    localStorage.removeItem('pending_username');
   }
 };

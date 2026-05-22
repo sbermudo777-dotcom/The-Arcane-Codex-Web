@@ -111,9 +111,8 @@ const formatTime = (seconds: number | undefined): string => {
                 <td class="px-8 py-6">
                   <div class="flex flex-col">
                     <span class="text-xl font-serif text-slate-100 group-hover/row:text-amber-400 transition-colors">
-                      {{ player.playerName || player.username || 'Guardián Anónimo' }}
+                      {{ player.username || player.playerName || 'Guardián Anónimo' }}
                     </span>
-                    <span class="text-[9px] uppercase tracking-widest text-slate-600 mt-1">ID: {{ player.uid.slice(0, 8) }}</span>
                   </div>
                 </td>
                 
