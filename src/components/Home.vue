@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// Componente estático de la pantalla de inicio principal. No requiere lógica de estado en este momento.
 </script>
 
 <template>
@@ -9,7 +8,7 @@
     <div class="absolute inset-0 z-0 bg-gradient-to-b from-slate-950 via-transparent to-slate-950 pointer-events-none"></div>
 
     <!-- Elemento mágico y runas giratorias del centro -->
-    <div class="relative z-10 mb-12">
+    <div class="relative mb-12">
       <div class="w-64 h-64 md:w-96 md:h-96 relative">
         <!-- Anillos exteriores giratorios concéntricos -->
         <div class="absolute inset-0 border-4 border-amber-500/20 rounded-full animate-[spin_20s_linear_infinite]"></div>
@@ -18,9 +17,20 @@
         
         <!-- Resplandor central de la luna moribunda -->
         <div class="absolute inset-0 flex items-center justify-center">
-          <div class="w-32 h-32 bg-amber-500/20 rounded-full blur-3xl animate-pulse"></div>
-          <span class="text-8xl md:text-9xl drop-shadow-[0_0_30px_rgba(245,158,11,0.6)] select-none">🌙</span>
+          <div class="absolute w-32 h-32 bg-amber-500/20 rounded-full blur-3xl animate-pulse"></div>
+          <video 
+            class="absolute w-96 h-56 md:w-[800px] md:h-[470px] object-contain select-none pointer-events-none arcane-video transition-opacity duration-150"
+            autoplay 
+            loop 
+            muted 
+            playsinline
+            preload="auto"
+          >
+            <source src="/vd-logo.mp4" type="video/mp4">
+            Tu navegador no soporta videos.
+          </video>
         </div>
+
 
         <!-- Runas flotantes y en rotación alrededor del centro -->
         <div class="absolute inset-0 animate-[spin_30s_linear_infinite]">
@@ -72,6 +82,27 @@
 </template>
 
 <style scoped>
+.arcane-video {
+  mix-blend-mode: screen;
+  /* Truco de composición 3D para corregir el bug de renderizado en Chrome/Edge y hacer el fondo transparente */
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  /* Desactiva los límites de tamaño por defecto de Tailwind (Preflight) para permitir que el video crezca libremente */
+  max-width: none !important;
+  max-height: none !important;
+  /* Recorta un 10% de la parte inferior para ocultar la marca de agua "Veo" sin perder el centrado del planeta */
+  clip-path: inset(0 0 10% 0);
+  /* Previene el destello negro al cargar el video haciendo un fade-in sutil */
+  animation: fadeInVideo 0.5s ease-out forwards;
+  /* Asegura una transición fluida al salir de la página */
+  transition: opacity 0.15s ease-in-out;
+}
+
+@keyframes fadeInVideo {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 .font-serif {
   font-family: 'Cinzel', serif;
 }
